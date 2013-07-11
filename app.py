@@ -16,7 +16,6 @@ from docopt import docopt
 
 app = Flask(__name__)
 
-	
 class MyExtElement(etree.XSLTExtension):
 	def execute(self, context, self_node, input_node, output_parent):
 		print("Hello from XSLT!")
@@ -40,7 +39,6 @@ def hello(filename):
 	    if outdir is None:
 	        outdir, ext = os.path.splitext(os.path.basename(filename))
 					
-	#print str(generate_htmldir_files(hwp5file, outdir))
 	return str(generate_htmldir_files(hwp5file, outdir))
 			
 def generate_htmldir_files(hwp5file, base_dir):
@@ -57,33 +55,28 @@ def generate_htmldir_files(hwp5file, base_dir):
 		try:
 			hwp5file.xmlevents(embedbin=False).dump(xhwp5)			
 			
-			html_path = os.path.join(base_dir, 'index.html')
-			css_path = os.path.join(base_dir, 'styles.css')
-			#generate_css_file(xslt, path, css_path)
-			html_xsl = hwp5_resources_filename('xsl/hwp5html.xsl')
+			htmlXSL = hwp5_resources_filename('xsl/hwp5html.xsl')
+			cssXSL = hwp5_resources_filename('xsl/hwp5css.xsl')
 			
-			xslt_ext_tree = etree.XML(open(html_xsl).read())
-			my_extension = MyExtElement()
-			extensions = { ('testns', 'ext') : my_extension }
-			transform = etree.XSLT(xslt_ext_tree, extensions = extensions)
+			htmlxslTree = etree.XML(open(htmlXSL).read())
+			cssxslTree = etree.XML(open(cssXSL).read())
+			
+			transformHTML = etree.XSLT(htmlxslTree)
+			transformCSS = etree.XSLT(cssxslTree)
 						
 			file = open(path)
-			root = etree.XML(file.read())
 			
-			result = transform(root)
-			return result
+			originHTML = etree.XML(file.read())
+			css = transformCSS(originHTML)
+			html = transformHTML(originHTML)
+			
+			html = str(html).replace("</head>", "<style>" + str(css) + "</style>")
+			
+			return html
 		finally:
 			xhwp5.close()
-		
-			
 	finally:
 		os.unlink(path)
-
-def generate_css_file(xslt, xhwp5_path, css_path):
-	from hwp5.hwp5odt import hwp5_resources_filename
-
-	css_xsl = hwp5_resources_filename('xsl/hwp5css.xsl')
-	xslt(css_xsl, xhwp5_path, css_path)
 
 if __name__ == "__main__":
 	app.run()

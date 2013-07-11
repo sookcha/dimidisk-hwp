@@ -8,7 +8,6 @@
         <html>
             <head>
                 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-                <link rel="stylesheet" href="styles.css" type="text/css"/>
             </head>
             <xsl:element name="body">
                 <xsl:for-each select="HwpDoc/BodyText">
