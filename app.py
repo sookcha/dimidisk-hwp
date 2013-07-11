@@ -70,7 +70,7 @@ def generate_htmldir_files(hwp5file, base_dir):
 			css = transformCSS(originHTML)
 			html = transformHTML(originHTML)
 			
-			html = str(html).replace("</head>", "<style>" + str(css) + "</style></head>")
+			html = str(html).replace("</head>", "\t<style>" + str(css) + "</style>\n</head>")
 			
 			return html
 		finally:
