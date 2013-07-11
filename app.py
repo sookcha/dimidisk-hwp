@@ -23,7 +23,7 @@ class MyExtElement(etree.XSLTExtension):
 		output_parent.extend(list(self_node))
 
 @app.route("/<filename>")
-def hello(filename):
+def getHTML(filename):
 	from hwp5.dataio import ParseError
 	from hwp5.xmlmodel import Hwp5File
 	try:
@@ -70,7 +70,7 @@ def generate_htmldir_files(hwp5file, base_dir):
 			css = transformCSS(originHTML)
 			html = transformHTML(originHTML)
 			
-			html = str(html).replace("</head>", "<style>" + str(css) + "</style>")
+			html = str(html).replace("</head>", "<style>" + str(css) + "</style></head>")
 			
 			return html
 		finally:
