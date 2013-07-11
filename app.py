@@ -30,18 +30,16 @@ def getHTML(filename):
 	    hwp5file = Hwp5File(filename)
 	except ParseError, e:
 	    e.print_to_logger(logger)
-	    sys.exit(1)
 	except InvalidHwp5FileError, e:
 	    logger.error('%s', e)
-	    sys.exit(1)
 	else:
 	    outdir = './'
 	    if outdir is None:
 	        outdir, ext = os.path.splitext(os.path.basename(filename))
 					
-	return str(generate_htmldir_files(hwp5file, outdir))
+	return hwpToHTML(hwp5file, outdir)
 			
-def generate_htmldir_files(hwp5file, base_dir):
+def hwpToHTML(hwp5file, base_dir):
 	import os
 	from tempfile import mkstemp
 	from hwp5.plat import get_xslt
@@ -72,7 +70,7 @@ def generate_htmldir_files(hwp5file, base_dir):
 			
 			html = str(html).replace("</head>", "\t<style>" + str(css) + "</style>\n</head>")
 			
-			return html
+			return str(html)
 		finally:
 			xhwp5.close()
 	finally:
