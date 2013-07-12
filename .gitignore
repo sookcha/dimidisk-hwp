@@ -1,1 +1,2 @@
-*.hwp
+venv
+*.pyc
