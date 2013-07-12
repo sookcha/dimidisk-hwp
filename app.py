@@ -4,9 +4,13 @@ import os
 import os.path
 import logging
 import sys
+import urllib
+import urllib2
+import tempfile
+import StringIO
 
 from flask import Flask
-import sys
+from flask import Response
 from hwp5 import __version__ as version
 from hwp5.proc import rest_to_docopt
 from hwp5.proc import init_logger
@@ -22,21 +26,47 @@ class MyExtElement(etree.XSLTExtension):
 		output_parent.text = "I did it!"
 		output_parent.extend(list(self_node))
 
-@app.route("/<filename>")
-def getHTML(filename):
+@app.route("/<session>/<diskId>/<fileId>/<filename>")
+def getHTML(session,diskId,fileId,filename):
 	from hwp5.dataio import ParseError
 	from hwp5.xmlmodel import Hwp5File
+	from tempfile import mkstemp
+	
+	url = 'http://disk.dimigo.hs.kr:8282/WebFileDownloader.do'
+	values = {'id' : fileId,
+	          'diskType' : 'sharedisk',
+	          'diskId' : diskId }
+						
+	headers = {
+	  'Origin' : 'http://disk.dimigo.hs.kr:8282',
+	  'Accept-Encoding' : 'gzip,deflate',
+	  'Content-Type' : 'application/x-www-form-urlencoded',
+	  'Accept' : 'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */*',
+	  'User-Agent' : 'DimiDisk',
+	  'Cookie' : 'JSESSIONID=' + session
+	}
+	
+	data = urllib.urlencode(values)
+	req = urllib2.Request(url, data, headers)
+	
+	response = urllib2.urlopen(req)
+	downloadedHWP = response.read()
+	
+	tempHWP, tempPath = tempfile.mkstemp()
+	realHWP = os.fdopen(tempHWP, 'w')
+	realHWP.write(downloadedHWP)	
+	realHWP.close()
+	
 	try:
-	    hwp5file = Hwp5File(filename)
+		hwp5file = Hwp5File(tempPath)
 	except ParseError, e:
-	    e.print_to_logger(logger)
+		e.print_to_logger(logger)
 	except InvalidHwp5FileError, e:
-	    logger.error('%s', e)
+		logger.error('%s', e)
 	else:
-	    outdir = './'
-	    if outdir is None:
-	        outdir, ext = os.path.splitext(os.path.basename(filename))
-					
+		outdir = './'
+		if outdir is None:
+			outdir, ext = os.path.splitext(os.path.basename(tempPath))	
 	return hwpToHTML(hwp5file, outdir)
 			
 def hwpToHTML(hwp5file, base_dir):
@@ -77,4 +107,4 @@ def hwpToHTML(hwp5file, base_dir):
 		os.unlink(path)
 
 if __name__ == "__main__":
-	app.run()
+	app.run(debug=True)
