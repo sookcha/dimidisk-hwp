@@ -1,0 +1,3 @@
+OleFileIO_PL >= 0.23
+docopt >= 0.6
+hypua2jamo >= 0.2

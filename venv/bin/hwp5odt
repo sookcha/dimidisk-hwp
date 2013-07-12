@@ -1,0 +1,10 @@
+#!/Users/sookcha/Desktop/Dev/dimidisk-hwp/venv/bin/python
+# EASY-INSTALL-ENTRY-SCRIPT: 'pyhwp==0.1b4','console_scripts','hwp5odt'
+__requires__ = 'pyhwp==0.1b4'
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('pyhwp==0.1b4', 'console_scripts', 'hwp5odt')()
+    )
