@@ -1,0 +1,14 @@
+Flask==0.10.1
+Jinja2==2.7
+MarkupSafe==0.18
+OleFileIO-PL==0.25
+Werkzeug==0.9.1
+distribute==0.6.34
+docopt==0.6.1
+gunicorn==17.5
+hypua2jamo==0.3
+itsdangerous==0.22
+logging==0.4.9.6
+lxml==3.2.1
+pyhwp==0.1b4
+wsgiref==0.1.2

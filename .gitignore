@@ -1,2 +1,6 @@
 venv
+<<<<<<< HEAD
 *.hwp
+=======
+*.pyc
+>>>>>>> heroku
