@@ -1,5 +1,4 @@
 # HWP viewer for Dimidisk
--------------------------
 [디미디스크](https://github.com/sookcha/dimidisk)를 위한 HWP 라이브 뷰어 입니다.
 
 이 뷰어에는 [Pyhwp](https://github.com/mete0r/pyhwp) 라이브러리가 사용되었습니다.
@@ -23,4 +22,3 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-ㅌ
